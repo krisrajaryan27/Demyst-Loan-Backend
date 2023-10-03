@@ -28,6 +28,12 @@ export class UserController {
     return this.userService.getUsers();
   }
 
+  @Get('tokenized')
+  @UseGuards(AuthGuard)
+  async getUser(@Req() req): Promise<User> {
+    return this.userService.getUser(req.user);
+  }
+
   @Get('/balance-sheet')
   @UseGuards(AuthGuard)
   getBalanceSheet(@Req() req) {

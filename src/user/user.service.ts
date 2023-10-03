@@ -84,6 +84,25 @@ export class UserService {
     }
   }
 
+  async getUser(user: User): Promise<User | null> {
+    try {
+      const userByEmail = await this.userModel.findOne(
+        { email: user.email },
+        { _id: 0, password: 0 },
+      );
+      if (!userByEmail) {
+        throw new Error('User not found');
+      }
+
+      return userByEmail;
+    } catch (error) {
+      this.logger.error(
+        `An error occurred while retrieving user by email: ${error.message}`,
+      );
+      return null; // Return null when an error occurs
+    }
+  }
+
   getBalanceSheet(user: User) {
     try {
       // Get the balance sheet from accounting software
@@ -102,7 +121,6 @@ export class UserService {
       const profitOrLossSummary = calculateProfitOrLossSummary(
         body.balanceSheet,
       );
-      console.log(profitOrLossSummary);
       //Apply rules for loan application
       const data = {
         businessDetails: {
